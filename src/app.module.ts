@@ -11,6 +11,7 @@ import { MailModule } from './modules/mail/mail.module';
 import { MailService } from './modules/mail/mail.service';
 import { RedisModule } from './modules/redis/redis.module';
 import { RepositoryModule } from './modules/common/repository/repository.module';
+import { HealthModule } from './modules/health/health.module';
 
 @Module({
   imports:
@@ -21,7 +22,8 @@ import { RepositoryModule } from './modules/common/repository/repository.module'
     UsersModule,
     MailModule,
     RedisModule,
-    RepositoryModule
+    RepositoryModule,
+    HealthModule
   ],
   controllers: [],
   providers:
