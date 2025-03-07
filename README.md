@@ -47,6 +47,12 @@ A NestJS boilerplate for starting a new project faster.
   npm run typeorm:run-migrations
 ```
 
+### Seed Database
+
+```bash
+  npm run typeorm:run-seeders
+```
+
 ## API Documentation
 
 Interactive Swagger documentation available at:
