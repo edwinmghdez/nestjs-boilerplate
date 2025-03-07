@@ -21,7 +21,8 @@
     "typeorm:create-migration": "env-cmd typeorm-ts-node-commonjs migration:create ./src/db/migrations/create-$npm_config_name-table",
     "typeorm:generate-migration": "env-cmd typeorm-ts-node-commonjs -d ./src/db/data-source.ts migration:generate ./src/db/migrations/create-$npm_config_name-table",
     "typeorm:run-migrations": "env-cmd typeorm-ts-node-commonjs -d ./src/db/data-source.ts migration:run",
-    "typeorm:revert": "env-cmd typeorm-ts-node-commonjs -d ./src/db/data-source.ts migration:revert"
+    "typeorm:revert": "env-cmd typeorm-ts-node-commonjs -d ./src/db/data-source.ts migration:revert",
+    "typeorm:run-seeders": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs -d ./src/db/data-source.ts seed:run"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
@@ -52,6 +53,7 @@
     "rxjs": "^7.8.1",
     "speakeasy": "^2.0.0",
     "typeorm": "^0.3.20",
+    "typeorm-extension": "^3.7.0",
     "uuid": "^11.0.5"
   },
   "devDependencies": {

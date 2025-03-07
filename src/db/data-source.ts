@@ -1,10 +1,11 @@
 import "reflect-metadata"
 import { DataSource, DataSourceOptions } from "typeorm"
 import * as dotenv from "dotenv";
+import { SeederOptions } from "typeorm-extension";
 
 dotenv.config();
 
-let databaseOptionsAux: DataSourceOptions;
+let databaseOptionsAux: DataSourceOptions & SeederOptions;
 
 databaseOptionsAux = {
   type: "mysql",
@@ -18,6 +19,7 @@ databaseOptionsAux = {
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/db/migrations/*{.ts,.js}'],
   migrationsTableName: "migrations",
+  seeds: ['dist/db/seeders/*{.ts,.js}']
 }
 
 const databaseOptions = databaseOptionsAux
