@@ -17,6 +17,7 @@ import { FullUserDto } from '../users/dto/full-user.dto';
 import { PasswordRequestResetDto } from './dto/password-request-reset.dto';
 import { PasswordResetDto } from './dto/password-reset.dto';
 import * as speakeasy from 'speakeasy';
+import { I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class AuthService
@@ -29,7 +30,8 @@ export class AuthService
     @Inject('REDIS_CLIENT')
     private readonly redisClient: Redis,
     @InjectRepository(PasswordResetTokens)
-    private readonly passwordResetTokensRepository: Repository<PasswordResetTokens>
+    private readonly passwordResetTokensRepository: Repository<PasswordResetTokens>,
+    private i18n: I18nService
   ) {}
   
   async login(payload: LoginDto): Promise<AuthUserDto | { needs2FA: boolean }>
@@ -40,7 +42,7 @@ export class AuthService
     const isPasswordValid = await comparePasswords(password, user.password);
 
     if (!user || !isPasswordValid) {
-      throw new UnauthorizedException('Invalid Credentials');
+      throw new UnauthorizedException(this.i18n.t('common.auth.INVALID_CREDENTIALS'));
     }
 
     if (user.is_two_factor_enabled) {
@@ -52,7 +54,7 @@ export class AuthService
         token: code
       });
   
-      if (!isValid) throw new UnauthorizedException('Invalid 2FA code');
+      if (!isValid) throw new UnauthorizedException(this.i18n.t('common.auth.INVALID_2FA_CODE'));
     }
 
     const token = await this.jwtService.signAsync({
@@ -73,7 +75,7 @@ export class AuthService
     const user = await this.usersService.findOne(authUser.id);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(this.i18n.t('common.users.USER_NOT_FOUND'));
     }
 
     return user; /* Revisar porque no puedo usar el mapToUserDto */
@@ -82,13 +84,13 @@ export class AuthService
   async refresh(authUser, token: any)
   {
     if (!authUser) {
-      throw new UnauthorizedException('Unauthorized');
+      throw new UnauthorizedException(this.i18n.t('common.auth.UNAUTHORIZED'));
     }
 
     const user = await this.usersService.findOne(authUser.id);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(this.i18n.t('common.users.USER_NOT_FOUND'));
     }
 
     const newToken = await this.jwtService.signAsync({
@@ -139,7 +141,7 @@ export class AuthService
     const user = await this.usersService.findOne(id);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(this.i18n.t('common.users.USER_NOT_FOUND'));
     }
 
     return user;
@@ -149,14 +151,14 @@ export class AuthService
   {
     const decoded = this.jwtService.decode(token) as { exp: number };
     if (!decoded || !decoded.exp) {
-      throw new UnauthorizedException('Invalid token');
+      throw new UnauthorizedException(this.i18n.t('common.auth.INVALID_TOKEN'));
     }
   
     const ttl = decoded.exp - Math.floor(Date.now() / 1000);
     if (ttl > 0) {
       await this.redisClient.setex(`blacklist:${token}`, ttl, '1');
     } else {
-      throw new UnauthorizedException('Token expired');
+      throw new UnauthorizedException(this.i18n.t('common.auth.TOKEN_EXPIRED'));
     }
   }
 
@@ -175,7 +177,7 @@ export class AuthService
 
     await this.mailService.sendPasswordRequestChange(user, token);
 
-    return { message: 'Successfully' };
+    return { message: this.i18n.t('common.strings.SUCCESSFULLY') };
   }
 
   async passwordReset(passwordResetDto: PasswordResetDto)
@@ -184,11 +186,11 @@ export class AuthService
     const resetToken = await this.passwordResetTokensRepository.findOneBy({ token: token });
 
     if (!resetToken) {
-      throw new BadRequestException('Token inavlid');
+      throw new BadRequestException(this.i18n.t('common.auth.INVALID_TOKEN'));
     }
 
     if (resetToken.expiration_date < new Date() || resetToken.deleted_at != null) {
-      throw new BadRequestException('Token expired');
+      throw new BadRequestException(this.i18n.t('common.auth.TOKEN_EXPIRED'));
     }
 
     const user = await this.usersService.findByEmail(resetToken.email);
@@ -198,7 +200,7 @@ export class AuthService
 
     await this.mailService.sendPasswordRestoredSuccessfully(user);
 
-    return { message: 'Successfully' };
+    return { message: this.i18n.t('common.strings.SUCCESSFULLY') };
   }
 
   async storePasswordResetToken(user: FullUserDto, token: string)

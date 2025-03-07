@@ -1,0 +1,41 @@
+{
+  "auth": {
+    "TOKEN_NOT_PROVIDE": "Token not provided",
+    "INVALID_CREDENTIALS": "Invalid credentials",
+    "INVALID_2FA_CODE": "Invalid code",
+    "UNAUTHORIZED": "Unauthorized",
+    "INVALID_TOKEN": "Invalid token",
+    "TOKEN_EXPIRED": "The token has expired",
+    "2FA_ENABLED": "2FA Enabled successfully",
+    "2FA_DISABLED": "2FA Disabled successfully"
+  },
+  "users": {
+    "USER_NOT_FOUND": "User not found",
+    "EMAIL_ALREDY_VERIFIED": "Email alredy verified",
+    "INVALID_VERIFICATION_LINK": "Invalid verification link"
+  },
+  "email_common": {
+    "HELLO": "Hello {name}",
+    "SIGN_OFF": "Best regards, {app_name}"
+  },
+  "email_confirmation": {
+    "SUBJECT": "Confirm your email",
+    "INTRO": "Thank you for signing up on our platform. To activate your account, click the button below:",
+    "BUTTON": "Verify Email",
+    "IGNORE": "If you did not request this verification, you can ignore this email."
+  },
+  "email_password_request": {
+    "SUBJECT": "Password request change",
+    "INTRO": "Click the link below to reset your password:",
+    "BUTTON": "Reset Password",
+    "IGNORE": "If you did not request this, please ignore this email."
+  },
+  "email_password_restored": {
+    "SUBJECT": "Password restored successfully",
+    "INTRO": "Your password has been successfully reset",
+    "WARNING": "If this was not you, please contact an administrator."
+  },
+  "strings": {
+    "SUCCESSFULLY": "Successfully completed"
+  }
+}

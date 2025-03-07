@@ -12,10 +12,23 @@ import { MailService } from './modules/mail/mail.service';
 import { RedisModule } from './modules/redis/redis.module';
 import { RepositoryModule } from './modules/common/repository/repository.module';
 import { HealthModule } from './modules/health/health.module';
+import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
+import { join } from 'path';
 
 @Module({
   imports:
   [
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      loaderOptions: {
+        path: join(__dirname, '/i18n/'),
+        watch: true,
+      },
+      resolvers: [
+        { use: QueryResolver, options: ['lang'] },
+        AcceptLanguageResolver,
+      ]
+    }),
     TypeOrmModule.forRoot(databaseOptions),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     AuthModule,

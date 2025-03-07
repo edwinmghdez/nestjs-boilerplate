@@ -1,0 +1,41 @@
+{
+  "auth": {
+    "TOKEN_NOT_PROVIDE": "Token no proporcionado",
+    "INVALID_CREDENTIALS": "Credenciales inválidas",
+    "INVALID_2FA_CODE": "Código inválido",
+    "UNAUTHORIZED": "No autorizado",
+    "INVALID_TOKEN": "Token inválido",
+    "TOKEN_EXPIRED": "El token ha expirado",
+    "2FA_ENABLED": "2FA Activado exitosamente",
+    "2FA_DISABLED": "2FA Desactivado exitosamente"
+  },
+  "users": {
+    "USER_NOT_FOUND": "Usuario no encontrado",
+    "EMAIL_ALREDY_VERIFIED": "El correo electrónico ya se encuentra verificado",
+    "INVALID_VERIFICATION_LINK": "Enlace de verificación inválido"
+  },
+  "email_common": {
+    "HELLO": "Hola {name},",
+    "SIGN_OFF": "Saludos,"
+  },
+  "email_confirmation": {
+    "SUBJECT": "Confirma tu correo electrónico",
+    "INTRO": "Gracias por registrarte en nuestra plataforma. Para activar tu cuenta, haz clic en el siguiente botón:",
+    "BUTTON": "Verificar Correo",
+    "IGNORE": "Si no solicitaste esta verificación, puedes ignorar este correo."
+  },
+  "email_password_request": {
+    "SUBJECT": "Solicitud para cambio de contraseña",
+    "INTRO": "Accede a la siguiente liga para restablecer tu contraseña:",
+    "BUTTON": "Restablecer Contraseña",
+    "IGNORE": "Si no haz sido tú, por favor ignora este correo."
+  },
+  "email_password_restored": {
+    "SUBJECT": "Contraseña reestablecida exitosamente",
+    "INTRO": "Tu contraseña ha sido restablecida de manera exitora",
+    "WARNING": "Si no haz sido tú, ponte en contacto con un administrador."
+  },
+  "strings": {
+    "SUCCESSFULLY": "Completado exitosamente"
+  }
+}

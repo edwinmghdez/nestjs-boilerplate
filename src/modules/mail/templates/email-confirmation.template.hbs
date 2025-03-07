@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Email verification</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -89,16 +88,16 @@
     <table class="container">
       <tr>
         <td class="header">
-          {{ appName }}
+          {{ app_name }}
         </td>
       </tr>
       <tr>
         <td class="content">
-          <p><strong>Hola {{ name }},</strong></p>
-          <p>Gracias por registrarte en nuestra plataforma. Para activar tu cuenta, haz clic en el siguiente botón:</p>
-          <a href="{{ url }}" class="button">Verificar Correo</a>
-          <p>Si no solicitaste esta verificación, puedes ignorar este correo.</p>
-          <p>Saludos,<br><strong>{{ appName }}</strong></p>
+          <p><strong>{{ hello }}</strong></p>
+          <p>{{ intro }}</p>
+          <a href="{{ url }}" class="button">{{ button }}</a>
+          <p>{{ ignore }}</p>
+          <p>{{ sign_off }}<br><strong>{{ app_name }}</strong></p>
         </td>
       </tr>
     </table>

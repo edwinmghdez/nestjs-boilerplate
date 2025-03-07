@@ -16,6 +16,7 @@ import * as speakeasy from 'speakeasy';
 import * as qrcode from 'qrcode';
 import { TwoFactorAuthDto } from './dto/two-factor-auth.dto';
 import * as dotenv from "dotenv";
+import { I18nService } from 'nestjs-i18n';
 
 dotenv.config();
 
@@ -24,7 +25,8 @@ export class UsersService
 {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    private i18n: I18nService
   ) {}
 
   async create(payload: CreateUserDto): Promise<UserDto>
@@ -33,7 +35,8 @@ export class UsersService
     const hashedPassword = await hashPassword(password);
     const data = this.userRepository.create({
       ...payload,
-      password: hashedPassword
+      password: hashedPassword,
+      is_two_factor_enabled: false
     });
     const user = await this.userRepository.save(data);
     return mapToUserDto(user);
@@ -53,7 +56,7 @@ export class UsersService
   async findOne(id: number): Promise<UserDto | null>
   {
     const user = await this.userRepository.findOneOrFail({ where: { id } }).catch((e) => {
-      throw new NotFoundException({status: HttpStatus.BAD_REQUEST, message: 'User not found'});
+      throw new NotFoundException({ status: HttpStatus.BAD_REQUEST, message: this.i18n.t('common.users.USER_NOT_FOUND') });
     });
 
     return mapToUserDto(user);
@@ -64,7 +67,7 @@ export class UsersService
     let hashedPassword = null;
 
     const user = await this.userRepository.findOneOrFail({ where: { id } }).catch((e) => {
-      throw new NotFoundException({status: HttpStatus.BAD_REQUEST, message: 'User not found'});
+      throw new NotFoundException({ status: HttpStatus.BAD_REQUEST, message: this.i18n.t('common.users.USER_NOT_FOUND') });
     });
 
     if (payload.password) {
@@ -84,7 +87,7 @@ export class UsersService
   async remove(id: number)
   {
     const user = await this.userRepository.findOneOrFail({ where: { id } }).catch((e) => {
-      throw new NotFoundException({status: HttpStatus.BAD_REQUEST, message: 'User not found'});
+      throw new NotFoundException({ status: HttpStatus.BAD_REQUEST, message: this.i18n.t('common.users.USER_NOT_FOUND') });
     });
 
     return await this.userRepository.remove(user);
@@ -93,7 +96,7 @@ export class UsersService
   async findByEmail(email: string): Promise<FullUserDto | null>
   {
     const user = await this.userRepository.findOneOrFail({ where: { email } }).catch((e) => {
-      throw new NotFoundException({status: HttpStatus.BAD_REQUEST, message: 'User not found'});
+      throw new NotFoundException({ status: HttpStatus.BAD_REQUEST, message: this.i18n.t('common.users.USER_NOT_FOUND') });
     });
 
     return {
@@ -107,17 +110,17 @@ export class UsersService
   async verify(id: number, hash: string)
   {
     const user = await this.userRepository.findOneOrFail({ where: { id } }).catch((e) => {
-      throw new NotFoundException({status: HttpStatus.BAD_REQUEST, message: 'User not found'});
+      throw new NotFoundException({ status: HttpStatus.BAD_REQUEST, message: this.i18n.t('common.users.USER_NOT_FOUND') });
     });
 
     if (user.email_verified_at) {
-      throw new ConflictException('Email already verified');
+      throw new ConflictException(this.i18n.t('common.users.EMAIL_ALREDY_VERIFIED'));
     }
 
     const expectedHash = createHmac('sha1', user.email).digest('hex');
 
     if (expectedHash !== hash) {
-      throw new BadRequestException({ status: HttpStatus.BAD_REQUEST, message: 'Invalid verification link' });
+      throw new BadRequestException({ status: HttpStatus.BAD_REQUEST, message: this.i18n.t('common.users.INVALID_VERIFICATION_LINK') });
     }
 
     const data = {
@@ -132,7 +135,7 @@ export class UsersService
   async generate2FA(id: number)
   {
     const user = await this.userRepository.findOneOrFail({ where: { id } }).catch((e) => {
-      throw new NotFoundException({ status: HttpStatus.BAD_REQUEST, message: 'User not found' });
+      throw new NotFoundException({ status: HttpStatus.BAD_REQUEST, message: this.i18n.t('common.users.USER_NOT_FOUND') });
     });
 
     const secret = speakeasy.generateSecret({
@@ -157,9 +160,8 @@ export class UsersService
   async enable2FA(id: number, payload: TwoFactorAuthDto)
   {
     const { code } = payload;
-    console.log(code);
     const user = await this.userRepository.findOneOrFail({ where: { id } }).catch((e) => {
-      throw new NotFoundException({ status: HttpStatus.BAD_REQUEST, message: 'User not found' });
+      throw new NotFoundException({ status: HttpStatus.BAD_REQUEST, message: this.i18n.t('common.users.USER_NOT_FOUND') });
     });
 
     const isValid = speakeasy.totp.verify({
@@ -168,7 +170,7 @@ export class UsersService
       token: code
     });
 
-    if (!isValid) throw new UnauthorizedException('Invalid 2FA code');
+    if (!isValid) throw new UnauthorizedException(this.i18n.t('common.auth.INVALID_2FA_CODE'));
 
     const data: Partial<User> = {
       ...user,
@@ -177,13 +179,13 @@ export class UsersService
 
     await this.userRepository.save(data);
 
-    return { message: '2FA enabled successfully' };
+    return { message: this.i18n.t('common.auth.2FA_ENABLED') };
   }
 
   async disable2FA(id: number)
   {
     const user = await this.userRepository.findOneOrFail({ where: { id } }).catch((e) => {
-      throw new NotFoundException({ status: HttpStatus.BAD_REQUEST, message: 'User not found' });
+      throw new NotFoundException({ status: HttpStatus.BAD_REQUEST, message: this.i18n.t('common.users.USER_NOT_FOUND') });
     });
 
     const data: Partial<User> = {
@@ -194,6 +196,6 @@ export class UsersService
 
 
     await this.userRepository.save(data);
-    return { message: '2FA disabled successfully' };
+    return { message: this.i18n.t('common.auth.2FA_DISABLED') };
   }
 }
