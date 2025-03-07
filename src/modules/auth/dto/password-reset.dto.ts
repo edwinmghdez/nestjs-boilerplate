@@ -4,7 +4,7 @@ import { IsNotEmpty } from "class-validator"
 export class PasswordResetDto
 {
   @ApiProperty()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'The passowrd should not be empty' })
   password: string
 
   @ApiProperty()
