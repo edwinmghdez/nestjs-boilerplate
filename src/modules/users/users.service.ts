@@ -6,7 +6,6 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { UserDto } from './dto/user.dto';
 import { mapToUserDto } from './dto/mapping-user.dto';
-import { PaginateUserDto } from './dto/paginate-user.dto';
 import { buildFindManyOptions } from 'src/utils/query-options-builder';
 import { makePagination } from 'src/utils/pagination';
 import { FullUserDto } from './dto/full-user.dto';
@@ -17,6 +16,7 @@ import * as qrcode from 'qrcode';
 import { TwoFactorAuthDto } from './dto/two-factor-auth.dto';
 import * as dotenv from "dotenv";
 import { I18nService } from 'nestjs-i18n';
+import { PaginationResponseDto } from 'src/dtos/pagination-reponse.dto';
 
 dotenv.config();
 
@@ -42,7 +42,7 @@ export class UsersService
     return mapToUserDto(user);
   }
 
-  async findAll(@Query() queryParams: any): Promise<PaginateUserDto>
+  async findAll(@Query() queryParams: any): Promise<PaginationResponseDto<UserDto>>
   {
     const [users, totalItems] = await this.userRepository.findAndCount(
       buildFindManyOptions({ queryParams })
