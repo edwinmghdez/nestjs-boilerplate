@@ -5,7 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { UserDto } from './dto/user.dto';
-import { mapToUserDto } from './dto/mapping-user.dto';
 import { buildFindManyOptions } from 'src/utils/query-options-builder';
 import { makePagination } from 'src/utils/pagination';
 import { FullUserDto } from './dto/full-user.dto';
@@ -17,6 +16,7 @@ import { TwoFactorAuthDto } from './dto/two-factor-auth.dto';
 import * as dotenv from "dotenv";
 import { I18nService } from 'nestjs-i18n';
 import { PaginationResponseDto } from 'src/dtos/pagination-reponse.dto';
+import { mapToUserDto } from 'src/utils/mapping-to-dto';
 
 dotenv.config();
 

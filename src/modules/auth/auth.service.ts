@@ -78,7 +78,7 @@ export class AuthService
       throw new NotFoundException(this.i18n.t('common.users.USER_NOT_FOUND'));
     }
 
-    return user; /* Revisar porque no puedo usar el mapToUserDto */
+    return user;
   }
 
   async refresh(authUser, token: any)
